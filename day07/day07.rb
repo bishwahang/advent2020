@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 
-
 class Bag
   attr_reader :contains, :color
   def initialize(color, contains = [])
@@ -36,12 +35,12 @@ class Bag
 end
 
 
-inputs = File.readlines("input.txt").map(&:chomp)
+input = File.readlines(File.expand_path("input.txt", __dir__)).map(&:chomp)
 
 container = {}
 
 # parsing of input
-inputs.each do |line|
+input.each do |line|
   hue, color, * = line.split(" ")
   color_name = "#{hue}_#{color}"
 

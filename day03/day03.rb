@@ -30,8 +30,8 @@ class Grid
   end
 end
 
+input = File.readlines(File.expand_path("input.txt", __dir__)).map(&:chomp)
 
-input = File.readlines("input.txt").map(&:chomp)
 y_max = input.count
 x_max = input.first.length
 grid = Grid.new(y_max, x_max)

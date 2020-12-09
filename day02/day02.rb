@@ -75,7 +75,7 @@ class CheckValidity
   end
 end
 
-input = File.readlines("input.txt").map(&:chomp)
+input = File.readlines(File.expand_path("input.txt", __dir__)).map(&:chomp)
 
 total_valid_count = 0
 input.each do |line|
@@ -90,7 +90,7 @@ end
 
 p "First part: #{total_valid_count}"
 
-input = File.readlines("input.txt").map(&:chomp)
+input = File.readlines(File.expand_path("input.txt", __dir__)).map(&:chomp)
 
 total_valid_count = 0
 input.each do |line|

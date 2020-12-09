@@ -89,7 +89,7 @@ class Passport
 end
 
 
-input = File.readlines("input.txt").map(&:chomp)
+input = File.readlines(File.expand_path("input.txt", __dir__)).map(&:chomp)
 
 options   = {}
 passports = []

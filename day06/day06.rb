@@ -25,12 +25,12 @@ class Group
 end
 
 
-inputs = File.readlines("input.txt").map(&:chomp)
+input = File.readlines(File.expand_path("input.txt", __dir__)).map(&:chomp)
 
 answers = []
 groups  = []
 
-inputs.each do |answer|
+input.each do |answer|
   if answer.empty?
     groups << Group.new(answers)
     answers = []

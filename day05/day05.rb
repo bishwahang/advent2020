@@ -69,12 +69,12 @@ class DecodeBoardingPass
 end
 
 
-inputs = File.readlines("input.txt").map(&:chomp)
+input = File.readlines(File.expand_path("input.txt", __dir__)).map(&:chomp)
 
 current_max = 0
 seat_ids    = []
 
-inputs.each do |machine_code|
+input.each do |machine_code|
   boarding_pass = BoardingPass.new(machine_code)
   seat_id       = DecodeBoardingPass.new(boarding_pass).call
 

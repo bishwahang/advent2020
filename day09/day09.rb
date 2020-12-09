@@ -2,6 +2,7 @@
 
 class CodeBreaker
   attr_reader :preamble, :code_stream, :input
+
   def initialize(input, preamble_length)
     @input       = input
     @preamble    = input[0, preamble_length]
@@ -88,7 +89,7 @@ class CodeBreaker
   end
 end
 
-input = File.readlines("input.txt").map(&:chomp).map(&:to_i)
+input = File.readlines(File.expand_path("input.txt", __dir__)).map(&:chomp).map(&:to_i)
 
 PREAMBLE_LIMIT = 25
 
