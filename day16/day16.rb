@@ -32,59 +32,52 @@ end
 
 puts "Part 1: #{(nearby_tickets.flatten - valid_tickets.flatten).sum}"
 
+# get all the valid tickets and add own ticket to the list
 valid_nearby_tickets = nearby_tickets.reject {|ticket| (ticket - valid_tickets.flatten).any?}
 valid_nearby_tickets << my_ticket
 
-ticket_lookup_table = valid_tickets.map.with_index { |x, i| [i, x] }.to_h
-
-
+# total ticket counts
 row_max = valid_nearby_tickets.count
+# total field/position counts
 col_max = valid_nearby_tickets[0].count
 
 truth_table = Array.new(row_max) { Array.new(col_max) {Array.new}}
+
+# for each valid neary by ticket, create a truth table if the number satisfied the field constraints
 valid_nearby_tickets.each_with_index do |row, row_index|
   row.each_with_index do |value, col_index|
-    ticket_lookup_table.each do |key, value_array|
-      truth_table[row_index][col_index][key] = value_array.include?(value)
+    valid_tickets.each_with_index do |value_array, field_index|
+      truth_table[row_index][col_index][field_index] = value_array.include?(value)
     end
   end
 end
 
-total_fields = ticket_lookup_table.keys.count
+# count all the possible positions for the fields based on 'transposed' truth table
 
-found_count = 0
-already_found_fields = {}
-while found_count < total_fields do
-  found_count +=1
-  truth_table.transpose.each_with_index do |transposed_row, position|
-    found_1 = false
-    true_counts_array = Array.new(total_fields, 0)
+possible_field_to_position_map = Hash.new {|h,k| h[k] = []}
 
-    transposed_row.each do |truth_array|
-      truth_array.each_with_index do |value, i|
-        true_counts_array[i] += 1 if value
-      end
-    end
-
-    true_counts_array.map! {|e| e % row_max}
-    if true_counts_array.count(0) == found_count
-      true_counts_array.each_with_index do |value, index|
-        if value == 0
-          unless already_found_fields.include?(index)
-            already_found_fields[index] = position
-          end
-        end
-      end
-      found_1 = true
-    end
-    break if found_1
+truth_table.transpose.each_with_index do |transposed_row, position|
+  transposed_row.transpose.map(&:all?).each_with_index do |value, field|
+    # a true value means that the current position satisfied the field constraints
+    possible_field_to_position_map[field] << position if value
   end
 end
 
-product = 1
-(0..6).each do |field|
-  position = already_found_fields[field]
-  product *= my_ticket[position]
+field_to_position_map = {}
+
+# sort the field key hash by number of possible position counts in ascending order
+# (1 count first, 2 count second, 3 count third, and so on...)
+# there should be exactly 1 possibilities, 2 possibilities, 3 possibilities, and so on to have a solution
+# starts from the first 1 count position_index possibilities
+possible_field_to_position_map.sort_by {|_,v| v.count}.each do |field_index, position_indicies|
+  # eliminate (n - 1) position possibilities from (n) possibilities
+  # This gives exact single position_index mapping for for current field_index
+  field_to_position_map[field_index] = (position_indicies - field_to_position_map.values).first
 end
+
+# first 6 departure text are from 0 to 5 indices
+product = (0..5).map do |field_index|
+  my_ticket[field_to_position_map[field_index]]
+end.reduce(:*)
 
 puts "Part 2: #{product}"
